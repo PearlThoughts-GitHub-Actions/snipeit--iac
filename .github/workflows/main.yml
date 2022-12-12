@@ -15,23 +15,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          # terraform_version: 0.13.0:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Step 1 - Create a temporary artifact downloads folder
+        run: mkdir downloads
+        
+      - name: step 2 - Add artifacts to publish to the temp folder
+        run: |
+          cd downloads
+          echo 'alpha'    > alpha.html
+          echo 'bravo'    > bravo.html
+          echo 'charlie'  > charlie.html
+          cd ..
+    
+      - name: Step 3 - Use the Upload Artifact GitHub Action
+        uses: actions/upload-artifact@v2
+        with: 
+          name: assets-for-download
+          path: downloads
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v1
+#         with:
+#           # terraform_version: 0.13.0:
+#           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
+#       - name: Terraform Format
+#         id: fmt
+#         run: terraform fmt -check
+
+#       - name: Terraform Init
+#         id: init
+#         run: terraform init
       
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
+#       - name: Terraform Validate
+#         id: validate
+#         run: terraform validate -no-color
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve -input=false
